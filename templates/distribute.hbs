@@ -1,0 +1,71 @@
+<section class="dh-form">
+  <div class="dh-drop{{#if h}} has-doc{{/if}}">
+    {{#if h}}
+      {{#if h.preview}}<img class="dh-prev-img" src="{{h.preview}}" alt="">{{else}}<span class="dh-prev-icon"><i class="fa-solid {{#if (eq h.type "entry")}}fa-book{{else}}fa-file-lines{{/if}}"></i></span>{{/if}}
+      <div class="dh-prev-info">
+        <span class="dh-prev-kind">{{#if (eq h.kind "image")}}Image{{else if (eq h.kind "entry")}}Journal entier · {{h.count}} page(s){{else}}Page de journal{{#if h.parentName}} · {{h.parentName}}{{/if}}{{/if}}</span>
+        <span class="dh-prev-hint">Glissez un autre document ici pour le remplacer</span>
+      </div>
+      <button type="button" class="dh-icon" data-action="clearDoc" data-tooltip="Retirer"><i class="fa-solid fa-xmark"></i></button>
+    {{else}}
+      <i class="fa-solid fa-hand-pointer dh-drop-ico"></i>
+      <span>Glisser ici une <b>page</b> ou un <b>journal</b>, une <b>tuile</b> ou un <b>acteur</b> (son image)</span>
+      <button type="button" data-action="pickImage"><i class="fa-solid fa-image"></i> Choisir une image…</button>
+    {{/if}}
+  </div>
+
+  <div class="form-group">
+    <label>Titre</label>
+    <div class="form-fields"><input type="text" name="title" value="{{h.title}}" placeholder="ex. Lettre de Lake à Dyer"></div>
+  </div>
+  <div class="form-group">
+    <label>Mot du Gardien</label>
+    <div class="form-fields"><input type="text" name="note" value="" placeholder="Facultatif — ex. trouvé dans la poche du manteau"></div>
+  </div>
+
+  <div class="form-group">
+    <label>Expéditeur</label>
+    <div class="form-fields"><input type="text" name="sender" value="" placeholder="Facultatif — ex. Bjørn Halvorsen <b.halvorsen@uio.no>"></div>
+    <p class="hint">En 2026 : affiché dans le mail reçu. En 1933 : « De la part de… » sur l'enveloppe.</p>
+  </div>
+
+  <fieldset class="dh-players">
+    <legend>Destinataires
+      <span class="dh-legend-tools">
+        <button type="button" data-action="all">Tous</button>
+        <button type="button" data-action="none">Aucun</button>
+      </span>
+    </legend>
+    {{#each players as |p|}}
+      <label class="dh-player{{#unless p.active}} offline{{/unless}}">
+        <input type="checkbox" name="users" value="{{p.id}}" {{#if p.active}}checked{{/if}}>
+        <span class="dh-dot" style="background:{{p.color}}"></span>
+        <span class="dh-pname">{{p.name}}{{#if p.character}} <em>— {{p.character}}</em>{{/if}}</span>
+        {{#if p.book}}
+          <i class="fa-solid fa-book-bookmark dh-ok" data-tooltip="Journal de bord trouvé"></i>
+        {{else if ../canCreate}}
+          <i class="fa-solid fa-book-medical dh-new" data-tooltip="Pas de journal : il sera créé"></i>
+        {{else}}
+          <i class="fa-solid fa-triangle-exclamation dh-warn" data-tooltip="Pas de journal de bord"></i>
+        {{/if}}
+      </label>
+    {{else}}
+      <p class="dh-empty">Aucun joueur dans ce monde.</p>
+    {{/each}}
+    <p class="dh-hint">Les joueurs connectés sont cochés.
+      {{#if folder}}Journaux de bord : <b>{{folder}}</b>.{{else}}<span class="dh-warn">Aucun dossier « Journal de bord » trouvé (réglages du module).</span>{{/if}}</p>
+  </fieldset>
+
+  <fieldset class="dh-opts">
+    <label><input type="checkbox" name="reveal" checked> Faire apparaître le document à l'écran</label>
+    <label><input type="checkbox" name="file" checked> Ranger une copie dans leur journal de bord</label>
+    {{#if h}}{{#unless (eq h.kind "image")}}
+      <label><input type="checkbox" name="grant"> Leur donner aussi l'accès en lecture au journal d'origine</label>
+    {{/unless}}{{/if}}
+    <label><input type="checkbox" name="preview" checked> Voir l'animation moi aussi</label>
+  </fieldset>
+
+  <footer class="dh-foot">
+    <button type="submit" class="dh-go" {{#unless h}}disabled{{/unless}}><i class="fa-solid fa-paper-plane"></i> Remettre</button>
+  </footer>
+</section>

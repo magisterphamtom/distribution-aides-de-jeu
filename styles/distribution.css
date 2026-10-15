@@ -1,0 +1,327 @@
+/* Distribution d'aides de jeu — magisterphamtom — MIT */
+
+@font-face { font-family: "DH Limelight"; src: url("../fonts/Limelight.woff2") format("woff2"); font-display: swap; }
+@font-face { font-family: "DH Rajdhani"; src: url("../fonts/Rajdhani-SemiBold.woff2") format("woff2"); font-weight: 600; font-display: swap; }
+@font-face { font-family: "DH Rajdhani"; src: url("../fonts/Rajdhani-Bold.woff2") format("woff2"); font-weight: 700; font-display: swap; }
+@font-face { font-family: "DH Inter"; src: url("../fonts/Inter-Regular.woff2") format("woff2"); font-weight: 400; font-display: swap; }
+@font-face { font-family: "DH Inter"; src: url("../fonts/Inter-SemiBold.woff2") format("woff2"); font-weight: 600; font-display: swap; }
+
+/* =================================================================== */
+/*  Fenêtre du Gardien                                                 */
+/* =================================================================== */
+
+.dh-app .window-content { padding: 10px 12px; }
+.dh-form { display: flex; flex-direction: column; gap: 8px; }
+
+.dh-drop {
+  display: flex; align-items: center; gap: 10px; flex-wrap: wrap; justify-content: center;
+  min-height: 96px; padding: 10px 12px; text-align: center;
+  border: 2px dashed color-mix(in srgb, var(--color-text-primary, #ddd) 35%, transparent);
+  border-radius: 8px; transition: background .15s, border-color .15s;
+}
+.dh-drop .dh-drop-ico { font-size: 1.6rem; opacity: .6; width: 100%; }
+.dh-drop:not(.has-doc) > span { width: 100%; opacity: .85; }
+.dh-drop > button { width: auto; flex: 0 0 auto; }
+.dh-drop.dh-over { border-color: #c9a227; background: rgba(201, 162, 39, .12); }
+.dh-drop.has-doc { justify-content: flex-start; text-align: left; flex-wrap: nowrap; border-style: solid; }
+.dh-prev-img { width: 84px; height: 84px; object-fit: cover; border-radius: 4px; border: 1px solid rgba(0,0,0,.4); flex: 0 0 auto; }
+.dh-prev-icon { width: 84px; height: 84px; display: grid; place-items: center; font-size: 2.2rem; opacity: .7; flex: 0 0 auto;
+  border: 1px solid color-mix(in srgb, var(--color-text-primary, #ddd) 25%, transparent); border-radius: 4px; }
+.dh-prev-info { display: flex; flex-direction: column; gap: 4px; flex: 1 1 auto; min-width: 0; }
+.dh-prev-kind { font-weight: 600; }
+.dh-prev-hint { font-size: .8rem; opacity: .65; }
+.dh-icon { flex: 0 0 28px !important; width: 28px; height: 28px; padding: 0; align-self: flex-start; }
+
+.dh-players, .dh-opts { margin: 0; padding: 6px 10px 8px; border-radius: 6px;
+  border: 1px solid color-mix(in srgb, var(--color-text-primary, #ddd) 20%, transparent); }
+.dh-players legend { display: flex; align-items: center; gap: 8px; padding: 0 4px; font-weight: 600; }
+.dh-legend-tools { display: inline-flex; gap: 4px; }
+.dh-legend-tools button { height: 22px; line-height: 20px; padding: 0 8px; font-size: .8rem; width: auto; }
+.dh-player { display: flex; align-items: center; gap: 8px; padding: 3px 2px; cursor: pointer; }
+.dh-player input { margin: 0; flex: 0 0 auto; }
+.dh-player.offline { opacity: .6; }
+.dh-dot { width: 10px; height: 10px; border-radius: 50%; flex: 0 0 auto; box-shadow: 0 0 0 1px rgba(0,0,0,.5); }
+.dh-pname { flex: 1 1 auto; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.dh-pname em { opacity: .7; }
+.dh-ok { color: #6fbf73; } .dh-new { color: #c9a227; } .dh-warn { color: #e57c4a; }
+.dh-hint, .dh-empty { margin: 4px 0 0; font-size: .8rem; opacity: .75; }
+.dh-opts { display: flex; flex-direction: column; gap: 2px; }
+.dh-opts label { display: flex; align-items: center; gap: 8px; cursor: pointer; }
+.dh-opts input { margin: 0; }
+.dh-foot { display: flex; }
+.dh-go { flex: 1; height: 36px; font-weight: 600; }
+
+/* =================================================================== */
+/*  Trace dans le chat                                                 */
+/* =================================================================== */
+
+.dh-chat { padding: 6px 8px; border-left: 3px solid #c9a227; background: rgba(201, 162, 39, .08); border-radius: 3px; }
+.dh-chat > i { color: #a8841b; margin-right: 4px; }
+.dh-chat em { opacity: .8; }
+.dh-chat-sub { font-size: .8em; opacity: .7; }
+
+/* =================================================================== */
+/*  Apparition — commun                                                */
+/* =================================================================== */
+
+#dh-reveal { position: fixed; inset: 0; z-index: 10000; display: grid; place-items: center; pointer-events: auto; }
+#dh-reveal .dh-veil { position: absolute; inset: 0; background: rgba(5, 6, 10, .72); opacity: 0; transition: opacity .4s; cursor: pointer; }
+#dh-reveal.dh-play .dh-veil { opacity: 1; }
+#dh-reveal .dh-stage { position: relative; width: min(760px, 92vw); height: min(84vh, 760px); display: grid; place-items: center; pointer-events: none; }
+#dh-reveal .dh-envelope, #dh-reveal .dh-doc { pointer-events: auto; }
+
+#dh-reveal .dh-doc {
+  position: absolute; inset: 0; margin: auto; width: 100%; max-height: 100%; height: fit-content;
+  display: flex; flex-direction: column; overflow: hidden; opacity: 0;
+}
+#dh-reveal .dh-doc-head { display: flex; flex-direction: column; gap: 2px; padding: 14px 20px 10px; flex: 0 0 auto; }
+#dh-reveal .dh-doc-body { flex: 1 1 auto; min-height: 0; overflow: auto; padding: 0 20px; display: flex; justify-content: center; }
+#dh-reveal .dh-doc-img { max-width: 100%; max-height: 58vh; object-fit: contain; display: block; border: 0; }
+#dh-reveal .dh-doc-text { width: 100%; max-height: 58vh; overflow: auto; padding: 4px 2px 12px; line-height: 1.5; }
+#dh-reveal .dh-doc-text img { max-width: 100%; height: auto; }
+#dh-reveal .dh-doc-text :is(h1, h2, h3, h4, h5, h6) { color: inherit; border-bottom: 0; text-shadow: none; margin: .4em 0 .3em; font-family: inherit; }
+#dh-reveal .dh-doc-empty { opacity: .75; font-style: italic; }
+#dh-reveal .dh-doc-foot { display: flex; gap: 8px; justify-content: flex-end; padding: 12px 20px 16px; flex: 0 0 auto; }
+#dh-reveal .dh-doc-foot button { width: auto; flex: 0 0 auto; padding: 0 14px; height: 34px; cursor: pointer; }
+
+#dh-reveal.dh-leaving { animation: dh-out .35s ease forwards; }
+@keyframes dh-out { to { opacity: 0; transform: scale(.98); } }
+
+/* =================================================================== */
+/*  Années 30 : enveloppe kraft, cachet de cire, papier                 */
+/* =================================================================== */
+
+.dh-era-1933 .dh-envelope {
+  position: relative; width: 420px; height: 270px; max-width: 80vw;
+  transform: translateY(-120vh) rotate(-8deg); perspective: 900px;
+}
+.dh-era-1933.dh-play .dh-envelope { animation: dh33-env 2.2s cubic-bezier(.2,.8,.25,1) forwards; }
+.dh-era-1933 .dh-env-back, .dh-era-1933 .dh-env-front {
+  position: absolute; inset: 0; border-radius: 4px;
+  background:
+    repeating-linear-gradient(35deg, rgba(90,60,25,.05) 0 2px, transparent 2px 6px),
+    linear-gradient(160deg, #d8b98a, #b88f58 70%, #a57d48);
+  box-shadow: 0 18px 40px rgba(0,0,0,.55);
+}
+.dh-era-1933 .dh-env-front {
+  clip-path: polygon(0 0, 50% 52%, 100% 0, 100% 100%, 0 100%);
+  background:
+    repeating-linear-gradient(35deg, rgba(90,60,25,.05) 0 2px, transparent 2px 6px),
+    linear-gradient(200deg, #dcbf93, #c19a63 60%, #a9824c);
+  display: flex; align-items: flex-end; justify-content: flex-start; padding: 0 0 22px 26px; box-shadow: none;
+}
+.dh-era-1933 .dh-env-label {
+  font-family: "DH Limelight", serif; color: #5a3815; font-size: 1.05rem; letter-spacing: .12em; text-transform: uppercase;
+  border: 2px solid rgba(120, 30, 20, .6); color: rgba(120, 30, 20, .75); padding: 2px 10px; transform: rotate(-4deg);
+}
+.dh-era-1933 .dh-env-flap {
+  position: absolute; left: 0; right: 0; top: 0; height: 56%; z-index: 2; transform-origin: top center;
+  clip-path: polygon(0 0, 100% 0, 50% 100%);
+  background: linear-gradient(180deg, #caa673, #b08752);
+  filter: drop-shadow(0 2px 2px rgba(0,0,0,.25));
+}
+.dh-era-1933.dh-play .dh-env-flap { animation: dh33-flap .6s 1.5s ease-in forwards; }
+.dh-era-1933 .dh-seal {
+  position: absolute; z-index: 3; left: 50%; top: 56%; width: 64px; height: 64px; margin: -32px 0 0 -32px; border-radius: 50%;
+  background:
+    radial-gradient(circle at 38% 34%, rgba(255,255,255,.35), transparent 30%),
+    radial-gradient(circle, #9e1b1b 0 52%, #7d1212 56%, #8e1717 62%, #6c0f0f 70%, transparent 71%),
+    conic-gradient(from 10deg, #8b1616, #6d0e0e, #941a1a, #700f0f, #8b1616);
+  clip-path: polygon(50% 0, 61% 6%, 74% 3%, 80% 15%, 94% 20%, 93% 34%, 100% 46%, 94% 58%, 97% 72%, 85% 80%, 80% 94%, 66% 94%, 54% 100%, 42% 95%, 28% 97%, 21% 85%, 7% 80%, 8% 65%, 0 53%, 6% 40%, 3% 26%, 15% 19%, 21% 6%, 35% 6%);
+  box-shadow: inset 0 0 0 1px rgba(0,0,0,.2);
+}
+.dh-era-1933 .dh-seal::after {
+  content: "✦"; position: absolute; inset: 0; display: grid; place-items: center;
+  color: rgba(40, 0, 0, .55); font-size: 1.6rem; text-shadow: 0 1px 0 rgba(255,255,255,.2);
+}
+.dh-era-1933.dh-play .dh-seal { animation: dh33-seal .5s 1.1s ease-in forwards; }
+
+.dh-era-1933 .dh-doc {
+  color: #2b2116; border-radius: 2px; transform: translateY(40px) scale(.6) rotate(1.5deg);
+  background:
+    radial-gradient(ellipse at 20% 10%, rgba(255,255,255,.45), transparent 50%),
+    radial-gradient(ellipse at 90% 95%, rgba(120,80,30,.18), transparent 55%),
+    linear-gradient(180deg, #f1e4c6, #e6d3ac);
+  box-shadow: 0 25px 60px rgba(0,0,0,.6), inset 0 0 60px rgba(120,80,30,.18);
+  font-family: Georgia, "Times New Roman", serif;
+}
+.dh-era-1933.dh-play .dh-doc { animation: dh33-doc .8s 2s cubic-bezier(.2,.9,.3,1.1) forwards; }
+.dh-era-1933 .dh-doc-head { border-bottom: 1px solid rgba(90,60,25,.3); margin: 0 14px 12px; padding-left: 6px; padding-right: 6px; }
+.dh-era-1933 .dh-doc-kicker { font-family: "DH Limelight", serif; font-size: .8rem; letter-spacing: .25em; text-transform: uppercase; color: #8b1a1a; }
+.dh-era-1933 .dh-doc-title { font-family: "DH Limelight", serif; font-size: 1.7rem; line-height: 1.15; color: #2b2116; }
+.dh-era-1933 .dh-doc-note { font-style: italic; color: #5c4630; }
+.dh-era-1933 .dh-doc-img { box-shadow: 0 2px 8px rgba(0,0,0,.35); }
+.dh-era-1933 .dh-doc-text { color: #2b2116; }
+.dh-era-1933 .dh-doc-foot button {
+  font-family: "DH Limelight", serif; letter-spacing: .06em; color: #f1e4c6; background: #5a3815;
+  border: 1px solid #3a240c; border-radius: 2px; box-shadow: none;
+}
+.dh-era-1933 .dh-doc-foot button:hover { background: #8b1a1a; }
+
+@keyframes dh33-env {
+  0%   { transform: translateY(-120vh) rotate(-14deg); opacity: 1; }
+  55%  { transform: translateY(12px) rotate(2deg); }
+  68%  { transform: translateY(0) rotate(-1deg); }
+  90%  { transform: translateY(0) rotate(0); opacity: 1; }
+  100% { transform: translateY(60px) scale(.9); opacity: 0; }
+}
+@keyframes dh33-seal {
+  0%   { transform: scale(1) rotate(0); opacity: 1; }
+  40%  { transform: scale(1.12) rotate(-6deg); }
+  100% { transform: translate(40px, 160px) rotate(40deg) scale(.7); opacity: 0; }
+}
+@keyframes dh33-flap { to { transform: rotateX(178deg); } }
+@keyframes dh33-doc {
+  0%   { opacity: 0; transform: translateY(40px) scale(.6) rotate(1.5deg); }
+  100% { opacity: 1; transform: translateY(0) scale(1) rotate(-.4deg); }
+}
+
+/* =================================================================== */
+/*  2025-2026 : notification de mail, client de messagerie, pièce jointe */
+/* =================================================================== */
+
+.dh-era-modern { font-family: "DH Inter", system-ui, sans-serif; --dhm-acc: #4da3ff; }
+.dh-era-modern .dh-veil { background: radial-gradient(ellipse at center, rgba(10, 18, 30, .72), rgba(3, 6, 12, .9)); }
+
+/* 1. La notification « Nouveau message » glisse en haut à droite */
+.dh-mail-toast {
+  position: fixed; top: 18px; right: 18px; width: min(360px, 86vw); z-index: 2;
+  display: flex; gap: 12px; padding: 12px 14px; border-radius: 16px;
+  background: rgba(30, 34, 42, .88); backdrop-filter: blur(18px) saturate(1.4);
+  border: 1px solid rgba(255, 255, 255, .12); box-shadow: 0 14px 34px rgba(0, 0, 0, .5);
+  color: #e9eef5; transform: translateX(120%); opacity: 0; pointer-events: none;
+}
+.dh-era-modern.dh-play .dh-mail-toast { animation: dhm-toast 2s cubic-bezier(.2,.9,.25,1) forwards; }
+.dh-mail-appicon {
+  flex: 0 0 40px; height: 40px; border-radius: 10px; display: grid; place-items: center;
+  background: linear-gradient(160deg, #6cb8ff, #1f6fe0); color: #fff; font-size: 1.15rem;
+}
+.dh-mail-toast-txt { min-width: 0; flex: 1; font-size: .86rem; line-height: 1.3; }
+.dh-mail-toast-top { display: flex; justify-content: space-between; font-size: .74rem; color: #9aa6b5; text-transform: uppercase; letter-spacing: .04em; }
+.dh-mail-toast-top b { color: #c9d3df; font-weight: 600; }
+.dh-mail-toast-from { font-weight: 600; color: #fff; margin-top: 2px; }
+.dh-mail-toast-subj, .dh-mail-toast-from { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.dh-mail-toast-att { color: #9aa6b5; font-size: .78rem; margin-top: 2px; }
+
+/* 2. La fenêtre du client mail s'ouvre */
+.dh-era-modern .dh-doc.dh-mail {
+  color: #1d2430; background: #f7f8fa; border-radius: 12px; transform: translateY(24px) scale(.94);
+  box-shadow: 0 30px 80px rgba(0, 0, 0, .6), 0 0 0 1px rgba(0, 0, 0, .35);
+}
+.dh-era-modern.dh-play .dh-doc.dh-mail { animation: dhm-doc .5s 1.55s cubic-bezier(.2,.9,.3,1) forwards; }
+.dh-mail-bar {
+  flex: 0 0 auto; display: flex; align-items: center; gap: 14px; padding: 9px 14px;
+  background: #e9ecf1; border-bottom: 1px solid #d6dbe3; font-size: .8rem; color: #5b6676;
+}
+.dh-mail-dots { display: flex; gap: 6px; }
+.dh-mail-dots i { width: 11px; height: 11px; border-radius: 50%; background: #ff5f57; }
+.dh-mail-dots i:nth-child(2) { background: #febc2e; }
+.dh-mail-dots i:nth-child(3) { background: #28c840; }
+.dh-mail-box { flex: 1; font-weight: 600; }
+.dh-mail-box i { color: var(--dhm-acc); margin-right: 4px; }
+.dh-mail-tools { display: flex; gap: 14px; color: #8a94a3; }
+
+#dh-reveal .dh-mail-head { padding: 16px 22px 10px; gap: 10px; }
+.dh-era-modern .dh-doc-title { font-family: "DH Inter", sans-serif; font-weight: 600; font-size: 1.35rem; line-height: 1.25; color: #111824; }
+.dh-mail-meta { display: flex; align-items: center; gap: 10px; }
+.dh-mail-avatar {
+  flex: 0 0 38px; height: 38px; border-radius: 50%; display: grid; place-items: center;
+  background: linear-gradient(160deg, #6cb8ff, #1f6fe0); color: #fff; font-weight: 600; font-size: 1rem;
+}
+.dh-mail-who { font-size: .88rem; line-height: 1.35; min-width: 0; }
+.dh-mail-who b { color: #111824; }
+.dh-mail-who span { color: #6b7685; }
+.dh-mail-to { color: #6b7685; font-size: .8rem; }
+.dh-mail-msg { padding: 2px 22px 12px; font-size: .95rem; line-height: 1.5; color: #2a3341; white-space: pre-wrap; flex: 0 0 auto; }
+
+/* 3. La pièce jointe se télécharge puis s'ouvre */
+.dh-mail-att {
+  position: relative; overflow: hidden; flex: 0 0 auto; margin: 0 22px 12px; padding: 9px 12px;
+  display: flex; align-items: center; gap: 10px; font-size: .86rem;
+  background: #fff; border: 1px solid #d6dbe3; border-radius: 8px;
+}
+.dh-mail-att > i { font-size: 1.3rem; color: #e0473c; }
+.dh-mail-att > i.fa-file-image { color: var(--dhm-acc); }
+.dh-mail-att-name { flex: 1; min-width: 0; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.dh-mail-att-state { color: #6b7685; font-size: .78rem; position: relative; }
+.dh-mail-ok { position: absolute; right: 0; top: 0; white-space: nowrap; opacity: 0; color: #1f9d55; }
+.dh-mail-dl { white-space: nowrap; }
+.dh-era-modern.dh-play .dh-mail-dl { animation: dhm-hide .15s 2.9s forwards; }
+.dh-era-modern.dh-play .dh-mail-ok { animation: dhm-show .15s 2.9s forwards; }
+.dh-mail-progress { position: absolute; left: 0; right: 0; bottom: 0; height: 3px; background: transparent; }
+.dh-mail-progress i { display: block; height: 100%; width: 0; background: var(--dhm-acc); }
+.dh-era-modern.dh-play .dh-mail-progress i { animation: dhm-load .9s 2s ease-in-out forwards; }
+
+.dh-era-modern .dh-doc-body { padding: 0 22px; clip-path: inset(0 0 100% 0); opacity: 0; }
+.dh-era-modern.dh-play .dh-doc-body { animation: dhm-open .6s 2.95s cubic-bezier(.3,.8,.3,1) forwards; }
+.dh-era-modern .dh-doc-img { border-radius: 6px; box-shadow: 0 2px 10px rgba(0, 0, 0, .18); }
+.dh-era-modern .dh-doc-imgwrap { border-radius: 6px; }
+.dh-era-modern .dh-doc-text { color: #1d2430; background: #fff; border: 1px solid #e1e5eb; border-radius: 6px; padding: 14px 18px; }
+.dh-era-modern .dh-doc-text a { color: #1f6fe0; }
+.dh-era-modern .dh-doc-foot { border-top: 1px solid #e1e5eb; margin-top: 12px; }
+.dh-era-modern .dh-doc-foot button {
+  font-family: "DH Inter", sans-serif; font-weight: 600; font-size: .85rem;
+  color: #fff; background: var(--dhm-acc); border: 0; border-radius: 8px; box-shadow: none;
+}
+.dh-era-modern .dh-doc-foot button[data-dh="open"] { color: #1f6fe0; background: #e7f0fc; }
+.dh-era-modern .dh-doc-foot button:hover { filter: brightness(1.08); }
+
+.dh-env-from { display: block; margin-top: 4px; font-size: .72em; letter-spacing: .04em; text-transform: none; opacity: .8; font-style: italic; }
+
+@keyframes dhm-toast {
+  0%   { transform: translateX(120%); opacity: 0; }
+  20%  { transform: translateX(0); opacity: 1; }
+  72%  { transform: translateX(0); opacity: 1; }
+  100% { transform: translateX(0) scale(.92); opacity: 0; }
+}
+@keyframes dhm-doc {
+  0%   { opacity: 0; transform: translateY(24px) scale(.94); filter: blur(4px); }
+  100% { opacity: 1; transform: translateY(0) scale(1); filter: blur(0); }
+}
+@keyframes dhm-load { 0% { width: 0; } 70% { width: 82%; } 100% { width: 100%; } }
+@keyframes dhm-open { 0% { clip-path: inset(0 0 100% 0); opacity: 0; } 100% { clip-path: inset(0 0 0 0); opacity: 1; } }
+@keyframes dhm-hide { to { opacity: 0; } }
+@keyframes dhm-show { to { opacity: 1; } }
+
+@media (prefers-reduced-motion: reduce) {
+  #dh-reveal.dh-play .dh-envelope, #dh-reveal.dh-play .dh-mail-toast { display: none; }
+  #dh-reveal.dh-play :is(.dh-doc-body, .dh-mail-progress i, .dh-mail-dl, .dh-mail-ok) { animation-duration: .01s !important; animation-delay: 0s !important; }
+  #dh-reveal.dh-play .dh-doc { animation-duration: .01s !important; animation-delay: 0s !important; }
+}
+
+/* =================================================================== */
+/*  Zoom & déplacement sur les images (ex-module Zoom & Pan)            */
+/* =================================================================== */
+
+.dh-zoom-wrap { position: relative; overflow: hidden; touch-action: none; }
+.dh-zoom-img { transform-origin: 0 0; will-change: transform; cursor: grab; user-select: none; -webkit-user-drag: none; }
+.dh-zoom-wrap.dh-zoom-drag .dh-zoom-img { cursor: grabbing; }
+.dh-zoom-bar {
+  position: absolute; right: 10px; bottom: 10px; z-index: 10; display: flex; gap: 4px; padding: 4px;
+  background: rgba(0, 0, 0, .55); border-radius: 6px; opacity: .55; transition: opacity .15s;
+}
+.dh-zoom-wrap:hover .dh-zoom-bar { opacity: 1; }
+.dh-zoom-btn {
+  width: 32px !important; height: 32px; flex: 0 0 32px !important; padding: 0 !important; margin: 0;
+  display: flex; align-items: center; justify-content: center; line-height: 1;
+  background: rgba(255, 255, 255, .1) !important; border: 1px solid rgba(255, 255, 255, .35) !important;
+  border-radius: 4px !important; color: #fff !important; cursor: pointer; box-shadow: none !important;
+}
+.dh-zoom-btn:hover { background: rgba(255, 255, 255, .28) !important; }
+.dh-zoom-btn i { pointer-events: none; margin: 0; }
+
+/* Dans l'apparition : le cadre épouse l'image pour un zoom centré sur le curseur */
+#dh-reveal .dh-doc-imgwrap { display: inline-block; max-width: 100%; line-height: 0; align-self: flex-start; border-radius: inherit; }
+.dh-era-modern .dh-doc-imgwrap { border-radius: 8px; }
+
+.dh-ping { position: absolute; transform: translate(-50%, -50%); pointer-events: none; z-index: 20; }
+.dh-ping-dot, .dh-ping-ring { position: absolute; top: 50%; left: 50%; width: 10px; height: 10px; border-radius: 50%; transform: translate(-50%, -50%); }
+.dh-ping-dot { background: var(--ping-color, #ff6400); box-shadow: 0 0 6px var(--ping-color, #ff6400); }
+.dh-ping-ring { border: 2px solid var(--ping-color, #ff6400); animation: dh-ping 1.2s ease-out infinite; }
+.dh-ping-late { animation-delay: .5s; }
+@keyframes dh-ping { 0% { width: 10px; height: 10px; opacity: .9; } 100% { width: 70px; height: 70px; opacity: 0; } }
+.dh-ping-label {
+  position: absolute; top: 16px; left: 50%; transform: translateX(-50%); white-space: nowrap;
+  font-size: 11px; font-weight: 600; color: #fff; text-shadow: 0 0 3px #000, 0 0 3px #000;
+  background: rgba(0, 0, 0, .45); padding: 1px 5px; border-radius: 3px;
+}
