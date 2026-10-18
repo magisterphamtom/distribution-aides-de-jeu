@@ -1,3 +1,5 @@
+<p align="center"><img src=".github/banner.png" alt="distribution-aides-de-jeu" width="100%"></p>
+
 # Distribution d'aides de jeu
 
 Module Foundry VTT (v13 / v14) pour remettre une aide de jeu aux joueurs, d'un geste.
