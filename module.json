@@ -34,5 +34,11 @@
   "download": "https://github.com/magisterphamtom/distribution-aides-de-jeu/releases/download/v1.2.0/module.zip",
   "bugs": "https://github.com/magisterphamtom/distribution-aides-de-jeu/issues",
   "readme": "https://github.com/magisterphamtom/distribution-aides-de-jeu/blob/main/README.md",
-  "license": "https://github.com/magisterphamtom/distribution-aides-de-jeu/blob/main/LICENSE"
+  "license": "https://github.com/magisterphamtom/distribution-aides-de-jeu/blob/main/LICENSE",
+  "media": [
+    {
+      "type": "cover",
+      "url": "https://raw.githubusercontent.com/magisterphamtom/distribution-aides-de-jeu/main/.github/banner.png"
+    }
+  ]
 }
