@@ -29,6 +29,17 @@
     <p class="hint">En 2026 : affiché dans le mail reçu. En 1933 : « De la part de… » sur l'enveloppe.</p>
   </div>
 
+  <div class="form-group">
+    <label>Époque</label>
+    <div class="form-fields">
+      <select name="era">
+        <option value="1933" {{#if (eq era "1933")}}selected{{/if}}>1933 — journal de bord</option>
+        <option value="modern" {{#if (eq era "modern")}}selected{{/if}}>2026 — carnet de bord</option>
+      </select>
+    </div>
+    <p class="hint">Détectée d'après le dossier du document (« 1933 » ou « 2026 »). Décide du journal où l'aide est rangée et de l'animation.</p>
+  </div>
+
   <fieldset class="dh-players">
     <legend>Destinataires
       <span class="dh-legend-tools">
@@ -41,24 +52,32 @@
         <input type="checkbox" name="users" value="{{p.id}}" {{#if p.active}}checked{{/if}}>
         <span class="dh-dot" style="background:{{p.color}}"></span>
         <span class="dh-pname">{{p.name}}{{#if p.character}} <em>— {{p.character}}</em>{{/if}}</span>
-        {{#if p.book}}
+        <span class="dh-b1933">{{#if p.book}}
           <i class="fa-solid fa-book-bookmark dh-ok" data-tooltip="Journal de bord trouvé"></i>
         {{else if ../canCreate}}
           <i class="fa-solid fa-book-medical dh-new" data-tooltip="Pas de journal : il sera créé"></i>
         {{else}}
           <i class="fa-solid fa-triangle-exclamation dh-warn" data-tooltip="Pas de journal de bord"></i>
-        {{/if}}
+        {{/if}}</span>
+        <span class="dh-bmodern">{{#if p.bookModern}}
+          <i class="fa-solid fa-book-bookmark dh-ok" data-tooltip="Carnet de bord trouvé"></i>
+        {{else if ../canCreate}}
+          <i class="fa-solid fa-book-medical dh-new" data-tooltip="Pas de carnet : il sera créé"></i>
+        {{else}}
+          <i class="fa-solid fa-triangle-exclamation dh-warn" data-tooltip="Pas de carnet de bord"></i>
+        {{/if}}</span>
       </label>
     {{else}}
       <p class="dh-empty">Aucun joueur dans ce monde.</p>
     {{/each}}
     <p class="dh-hint">Les joueurs connectés sont cochés.
-      {{#if folder}}Journaux de bord : <b>{{folder}}</b>.{{else}}<span class="dh-warn">Aucun dossier « Journal de bord » trouvé (réglages du module).</span>{{/if}}</p>
+      <span class="dh-b1933">{{#if folder}}Rangement : <b>{{folder}}</b>.{{else}}<span class="dh-warn">Aucun dossier « Journal de bord » trouvé (réglages du module).</span>{{/if}}</span>
+      <span class="dh-bmodern">{{#if folderModern}}Rangement : <b>{{folderModern}}</b>.{{else}}<span class="dh-warn">Aucun dossier « Carnet de bord » trouvé (réglages du module).</span>{{/if}}</span></p>
   </fieldset>
 
   <fieldset class="dh-opts">
     <label><input type="checkbox" name="reveal" checked> Faire apparaître le document à l'écran</label>
-    <label><input type="checkbox" name="file" checked> Ranger une copie dans leur journal de bord</label>
+    <label><input type="checkbox" name="file" checked> Ranger une copie dans leur journal / carnet de bord</label>
     {{#if h}}{{#unless (eq h.kind "image")}}
       <label><input type="checkbox" name="grant"> Leur donner aussi l'accès en lecture au journal d'origine</label>
     {{/unless}}{{/if}}

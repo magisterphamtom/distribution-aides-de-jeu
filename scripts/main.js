@@ -20,8 +20,13 @@ const TextEditorImpl = () => foundry.applications.ux.TextEditor.implementation;
 
 Hooks.once("init", () => {
   game.settings.register(ID, "logbookFolder", {
-    name: "Dossier des journaux de bord",
+    name: "Dossier des journaux de bord (1933)",
     hint: "Dossier qui contient un journal par joueur (le joueur en est propriétaire). Laissez vide : le module cherche un dossier dont le nom commence par « Journal de bord ».",
+    scope: "world", config: true, type: String, default: ""
+  });
+  game.settings.register(ID, "logbookFolderModern", {
+    name: "Dossier des carnets de bord (2026)",
+    hint: "Où ranger les aides de jeu de l'époque moderne. Laissez vide : le module cherche un dossier dont le nom commence par « Carnet de bord » (à défaut, il utilise le dossier 1933).",
     scope: "world", config: true, type: String, default: ""
   });
   game.settings.register(ID, "createLogbook", {
@@ -75,28 +80,50 @@ function era() {
 /*  Journaux de bord                                                   */
 /* ================================================================== */
 
-function logbookFolder() {
-  const wanted = game.settings.get(ID, "logbookFolder").trim().toLowerCase();
-  const folders = game.folders.filter((f) => f.type === "JournalEntry");
-  if (wanted) return folders.find((f) => f.name.trim().toLowerCase() === wanted) ?? null;
-  return folders.find((f) => f.name.trim().toLowerCase().startsWith("journal de bord")) ?? null;
+/** Époque d'une aide de jeu, d'après les dossiers où elle est rangée (ou le chemin de l'image). */
+function eraOf(handout) {
+  const test = (txt) => (/20(2[4-9]|3\d)/.test(txt) ? "modern" : /19[23]\d/.test(txt) ? "1933" : null);
+  let doc = handout?.uuid ? fromUuidSync(handout.uuid) : null;
+  if (doc?.documentName === "JournalEntryPage") doc = doc.parent;
+  for (let f = doc?.folder; f; f = f.folder) {
+    const e = test(f.name);
+    if (e) return e;
+  }
+  if (handout?.kind === "image" && handout.src) {
+    const e = test(decodeURIComponent(handout.src));
+    if (e) return e;
+  }
+  return era();
 }
 
-function logbookFor(user) {
-  const folder = logbookFolder();
+function findFolder(setting, prefix) {
+  const wanted = game.settings.get(ID, setting).trim().toLowerCase();
+  const folders = game.folders.filter((f) => f.type === "JournalEntry");
+  if (wanted) return folders.find((f) => f.name.trim().toLowerCase() === wanted) ?? null;
+  return folders.find((f) => f.name.trim().toLowerCase().startsWith(prefix)) ?? null;
+}
+
+function logbookFolder(e = "1933") {
+  if (e === "modern") return findFolder("logbookFolderModern", "carnet de bord") ?? findFolder("logbookFolder", "journal de bord");
+  return findFolder("logbookFolder", "journal de bord");
+}
+
+function logbookFor(user, e = "1933") {
+  const folder = logbookFolder(e);
   const OWNER = CONST.DOCUMENT_OWNERSHIP_LEVELS.OWNER;
+  const nameRe = e === "modern" ? /carnet de bord/i : /journal de bord/i;
   const candidates = game.journal.filter((j) =>
-    (folder ? j.folder?.id === folder.id : /journal de bord/i.test(j.name)) && j.ownership?.[user.id] === OWNER);
+    (folder ? j.folder?.id === folder.id : nameRe.test(j.name)) && j.ownership?.[user.id] === OWNER);
   if (candidates.length <= 1) return candidates[0] ?? null;
   const charName = user.character?.name?.toLowerCase();
   return candidates.find((j) => charName && j.name.toLowerCase().includes(charName.split(" ")[0])) ?? candidates[0];
 }
 
-async function ensureLogbook(user) {
-  const existing = logbookFor(user);
+async function ensureLogbook(user, e = "1933") {
+  const existing = logbookFor(user, e);
   if (existing || !game.settings.get(ID, "createLogbook")) return existing;
-  const folder = logbookFolder();
-  const name = `Journal de Bord [${user.character?.name ?? user.name}]`;
+  const folder = logbookFolder(e);
+  const name = `${e === "modern" ? "Carnet" : "Journal"} de Bord [${user.character?.name ?? user.name}]`;
   return JournalEntry.create({
     name,
     folder: folder?.id ?? null,
@@ -116,6 +143,8 @@ async function distribute(handout, options) {
   if (!game.user.isGM) return;
   const users = options.users.map((id) => game.users.get(id)).filter(Boolean);
   if (!users.length) return ui.notifications.warn("Choisissez au moins un destinataire.");
+  const hEra = options.era === "1933" || options.era === "modern" ? options.era : eraOf(handout);
+  const bookWord = hEra === "modern" ? "carnet de bord" : "journal de bord";
 
   // Pages à recopier
   let pages = [];
@@ -143,7 +172,7 @@ async function distribute(handout, options) {
     try {
       // 1. Rangement dans le journal de bord
       if (options.file) {
-        const book = await ensureLogbook(user);
+        const book = await ensureLogbook(user, hEra);
         if (book) {
           const stamp = new Date().toLocaleDateString("fr-FR");
           const created = await book.createEmbeddedDocuments("JournalEntryPage", pages.map((p) => ({
@@ -151,7 +180,7 @@ async function distribute(handout, options) {
             flags: { ...(p.flags ?? {}), [ID]: { received: stamp, note: options.note || "" } }
           })));
           pageUuid = created[0]?.uuid ?? null;
-        } else failed.push(`${user.name} (pas de journal de bord)`);
+        } else failed.push(`${user.name} (pas de ${bookWord})`);
       }
       // 2. Accès en lecture au document d'origine
       if (options.grant && source) {
@@ -172,7 +201,7 @@ async function distribute(handout, options) {
       type: "handout",
       users: Object.keys(delivered),
       pages: delivered,
-      era: era(),
+      era: game.settings.get(ID, "theme") === "auto" ? hEra : era(),
       title: handout.title,
       note: options.note || "",
       sender: options.sender || "",
@@ -190,7 +219,7 @@ async function distribute(handout, options) {
     const names = users.filter((u) => u.id in delivered).map((u) => esc(u.character?.name ?? u.name)).join(", ");
     if (names) {
       await ChatMessage.create({
-        content: `<div class="dh-chat"><i class="fa-solid fa-envelope-open-text"></i> <b>${esc(handout.title)}</b> remis à ${names}${options.note ? `<br><em>${esc(options.note)}</em>` : ""}${options.file ? `<br><span class="dh-chat-sub">Rangé dans le journal de bord.</span>` : ""}</div>`,
+        content: `<div class="dh-chat"><i class="fa-solid fa-envelope-open-text"></i> <b>${esc(handout.title)}</b> remis à ${names}${options.note ? `<br><em>${esc(options.note)}</em>` : ""}${options.file ? `<br><span class="dh-chat-sub">Rangé dans le ${bookWord}.</span>` : ""}</div>`,
         whisper: [...new Set([...game.users.filter((u) => u.isGM).map((u) => u.id), ...Object.keys(delivered)])]
       });
     }
@@ -223,14 +252,14 @@ const Reveal = {
       else if (first?.text?.content) {
         const html = await TextEditorImpl().enrichHTML(first.text.content, { relativeTo: first, secrets: false });
         body = `<div class="dh-doc-text">${html}</div>`;
-      } else body = `<p class="dh-doc-empty">Le document a été rangé dans votre journal de bord.</p>`;
+      } else body = `<p class="dh-doc-empty">Le document a été rangé dans votre ${data.era === "modern" ? "carnet" : "journal"} de bord.</p>`;
     }
 
     const el = document.createElement("div");
     el.id = "dh-reveal";
     el.className = `dh-reveal dh-era-${data.era === "modern" ? "modern" : "1933"}`;
     const foot = `<footer class="dh-doc-foot">
-            ${pageUuid ? `<button type="button" data-dh="open"><i class="fa-solid fa-book-open"></i> Ouvrir dans mon journal de bord</button>` : ""}
+            ${pageUuid ? `<button type="button" data-dh="open"><i class="fa-solid fa-book-open"></i> Ouvrir dans mon ${data.era === "modern" ? "carnet" : "journal"} de bord</button>` : ""}
             <button type="button" data-dh="close"><i class="fa-solid fa-check"></i> ${pageUuid ? "Ranger" : "Fermer"}</button>
           </footer>`;
     const sender = parseSender(data.sender);
@@ -403,19 +432,29 @@ class DistributeApp extends HandlebarsApplicationMixin(ApplicationV2) {
       name: u.name,
       character: u.character?.name ?? "",
       active: u.active,
-      book: !!logbookFor(u),
+      book: !!logbookFor(u, "1933"),
+      bookModern: !!logbookFor(u, "modern"),
       color: u.color?.css ?? u.color
     })).sort((a, b) => Number(b.active) - Number(a.active) || a.name.localeCompare(b.name, "fr"));
     return {
       h: this.handout,
       players,
-      folder: logbookFolder()?.name ?? null,
+      folder: logbookFolder("1933")?.name ?? null,
+      folderModern: logbookFolder("modern")?.name ?? null,
+      era: this.handout ? eraOf(this.handout) : era(),
       canCreate: game.settings.get(ID, "createLogbook")
     };
   }
 
   _onRender(context, options) {
     super._onRender(context, options);
+    const form = this.element.querySelector(".dh-form");
+    const sel = this.element.querySelector('select[name="era"]');
+    if (form && sel) {
+      const sync = () => { form.dataset.era = sel.value; };
+      sel.addEventListener("change", sync);
+      sync();
+    }
     const zone = this.element.querySelector(".dh-drop");
     if (!zone) return;
     zone.addEventListener("dragover", (ev) => { ev.preventDefault(); zone.classList.add("dh-over"); });
@@ -466,6 +505,7 @@ class DistributeApp extends HandlebarsApplicationMixin(ApplicationV2) {
         file: fd.file.checked,
         reveal: fd.reveal.checked,
         grant: fd.grant?.checked ?? false,
+        era: fd.era?.value ?? "",
         preview: fd.preview.checked
       });
     } finally {

@@ -410,3 +410,8 @@
 }
 .dh-app .dh-go:hover:not(:disabled) { filter: brightness(1.08); color: #1a1205 !important; }
 .dh-app .dh-ok { color: var(--at-green); } .dh-app .dh-new { color: var(--at-amber); }
+
+/* Époque choisie : on n'affiche que l'état du bon journal (1933) ou carnet (2026) */
+.dh-form .dh-bmodern { display: none; }
+.dh-form[data-era="modern"] .dh-bmodern { display: inline; }
+.dh-form[data-era="modern"] .dh-b1933 { display: none; }

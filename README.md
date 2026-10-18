@@ -8,6 +8,7 @@ Module Foundry VTT (v13 / v14) pour remettre une aide de jeu aux joueurs, d'un g
 - **Il coche les destinataires** (les joueurs connectés sont cochés d'office) et ajoute s'il veut un mot (« trouvé dans la poche du manteau »).
 - **Chez les joueurs, le document apparaît** avec une animation : en 1933, une enveloppe kraft scellée à la cire ; en 2025-2026, une notification « Nouveau message », puis le mail s'ouvre (expéditeur, objet, mot du Gardien) et la pièce jointe se télécharge et s'affiche. Le champ facultatif **Expéditeur** (« Nom <adresse> ») remplit le mail en 2026 et ajoute « De la part de… » sur l'enveloppe en 1933. Le style suit le module *Bascule d'époque* s'il est actif.
 - **Une copie se range dans leur journal de bord** (un journal par joueur, dont il est propriétaire, dans le dossier « Journal de bord… »). Le module le crée s'il manque.
+- **Deux époques, deux carnets** : une aide de jeu rangée sous un dossier « 2026 » va dans le **carnet de bord** du joueur (dossier « Carnet de bord… »), une aide sous « 1933 » dans son **journal de bord**. L'époque est détectée toute seule et reste modifiable dans la fenêtre ; l'animation suit (enveloppe ou mail).
 - **Une trace** part en message privé dans le chat (Gardien + destinataires).
 
 ## Zoom sur les images (ex-module « Zoom & Pan sur les images »)
