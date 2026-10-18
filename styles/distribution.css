@@ -325,3 +325,88 @@
   font-size: 11px; font-weight: 600; color: #fff; text-shadow: 0 0 3px #000, 0 0 3px #000;
   background: rgba(0, 0, 0, .45); padding: 1px 5px; border-radius: 3px;
 }
+
+/* =================================================================== */
+/*  Habillage « Atelier du Gardien » (fenêtre MJ uniquement)            */
+/*  Ardoise sombre, accents ambrés, grille hexagonale discrète.         */
+/* =================================================================== */
+.dh-app {
+  --at-bg: #0e141b; --at-panel: rgba(22, 31, 41, .78); --at-line: rgba(140, 170, 200, .16);
+  --at-ink: #e6edf4; --at-muted: #8fa1b4; --at-amber: #f5a623; --at-amber-soft: rgba(245, 166, 35, .14);
+  --at-green: #3ccf8e; --at-radius: 10px;
+  font-family: "DH Inter", system-ui, sans-serif;
+  border: 1px solid rgba(245, 166, 35, .35) !important; border-radius: 14px !important; overflow: hidden;
+  box-shadow: 0 24px 60px rgba(0,0,0,.65), 0 0 0 1px rgba(0,0,0,.6), 0 0 40px rgba(245, 166, 35, .08) !important;
+}
+.dh-app .window-header {
+  background: linear-gradient(180deg, #1b2532, #121a23) !important; border-bottom: 1px solid rgba(245, 166, 35, .45) !important;
+  box-shadow: 0 1px 12px rgba(245, 166, 35, .18); color: var(--at-ink);
+}
+.dh-app .window-header .window-title { font-weight: 600; letter-spacing: .12em; text-transform: uppercase; font-size: .82rem; color: var(--at-ink); }
+.dh-app .window-header .window-icon { color: var(--at-amber); }
+.dh-app .window-content {
+  background: radial-gradient(ellipse at 15% 0%, rgba(245, 166, 35, .07), transparent 45%), url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='42' height='48' viewBox='0 0 42 48'%3E%3Cpath d='M21 1 L41 12.5 L41 35.5 L21 47 L1 35.5 L1 12.5 Z' fill='none' stroke='%238caac8' stroke-opacity='.07'/%3E%3C/svg%3E"), linear-gradient(180deg, #121a23, var(--at-bg)) !important;
+  color: var(--at-ink);
+}
+.dh-app label, .dh-app legend { color: var(--at-muted); }
+.dh-app .form-group > label { text-transform: uppercase; letter-spacing: .1em; font-size: .7rem; font-weight: 600; }
+.dh-app .hint, .dh-app p.hint { color: var(--at-muted); }
+.dh-app input[type="text"], .dh-app select, .dh-app textarea {
+  background: rgba(8, 12, 17, .65) !important; color: var(--at-ink) !important;
+  border: 1px solid var(--at-line) !important; border-radius: 8px !important; box-shadow: none !important;
+}
+.dh-app input[type="text"]:focus, .dh-app select:focus, .dh-app textarea:focus {
+  border-color: var(--at-amber) !important; box-shadow: 0 0 0 3px var(--at-amber-soft) !important; outline: none;
+}
+.dh-app input::placeholder { color: #5f7286; }
+.dh-app button {
+  background: rgba(255,255,255,.04) !important; color: var(--at-ink) !important;
+  border: 1px solid var(--at-line) !important; border-radius: 8px !important; box-shadow: none !important;
+  transition: border-color .15s, background .15s, color .15s;
+}
+.dh-app button:hover:not(:disabled) { border-color: var(--at-amber) !important; color: #ffd38a !important; background: var(--at-amber-soft) !important; }
+.dh-app button:disabled { opacity: .4; }
+.dh-app button.active { background: var(--at-amber) !important; color: #141008 !important; border-color: var(--at-amber) !important; }
+.dh-app input[type="checkbox"] {
+  -webkit-appearance: none; appearance: none; flex: 0 0 18px; width: 18px; height: 18px; margin: 0; position: relative; cursor: pointer;
+  border: 1.5px solid rgba(140, 170, 200, .45); border-radius: 5px; background: rgba(8, 12, 17, .6); transition: all .15s;
+}
+.dh-app input[type="checkbox"]::before { content: none !important; display: none !important; }
+.dh-app input[type="checkbox"]:checked { background: var(--at-amber); border-color: var(--at-amber); box-shadow: 0 0 10px rgba(245, 166, 35, .45); }
+.dh-app input[type="checkbox"]:checked::after {
+  content: ""; position: absolute; left: 5px; top: 1px; width: 5px; height: 10px;
+  border: solid #141008; border-width: 0 2.5px 2.5px 0; transform: rotate(45deg);
+}
+.dh-app input[type="checkbox"]:focus-visible { outline: none; box-shadow: 0 0 0 3px var(--at-amber-soft); }
+.dh-app fieldset { background: var(--at-panel); border: 1px solid var(--at-line) !important; border-radius: var(--at-radius) !important; }
+.dh-app ::-webkit-scrollbar-thumb { background: rgba(245, 166, 35, .35); border-radius: 6px; }
+
+.dh-app .dh-form { gap: 10px; padding: 4px; }
+.dh-app .dh-drop {
+  border: 1.5px dashed rgba(245, 166, 35, .45) !important; border-radius: 12px !important;
+  background: rgba(245, 166, 35, .04); color: var(--at-muted); min-height: 104px;
+}
+.dh-app .dh-drop .dh-drop-ico { color: var(--at-amber); opacity: 1; }
+.dh-app .dh-drop b { color: var(--at-ink); }
+.dh-app .dh-drop.dh-over { background: var(--at-amber-soft); border-style: solid !important; box-shadow: 0 0 22px rgba(245, 166, 35, .25); }
+.dh-app .dh-drop.has-doc { background: var(--at-panel); border: 1px solid rgba(245, 166, 35, .5) !important; }
+.dh-app .dh-prev-img { width: 88px; height: 88px; border-radius: 10px; border: 2px solid rgba(245, 166, 35, .55); box-shadow: 0 6px 16px rgba(0,0,0,.5); }
+.dh-app .dh-prev-icon { border-radius: 10px; color: var(--at-amber); border-color: rgba(245, 166, 35, .4); }
+.dh-app .dh-prev-kind { color: var(--at-ink); }
+.dh-app .dh-prev-hint { color: var(--at-muted); opacity: 1; }
+.dh-app .dh-players, .dh-app .dh-opts { padding: 8px 12px 10px; }
+.dh-app .dh-players legend, .dh-app .dh-opts legend { color: var(--at-muted); text-transform: uppercase; letter-spacing: .1em; font-size: .7rem; }
+.dh-app .dh-player { padding: 6px 8px; border-radius: 8px; transition: background .15s; }
+.dh-app .dh-player:hover { background: rgba(255,255,255,.04); }
+.dh-app .dh-player:has(input:checked) { background: var(--at-amber-soft); }
+.dh-app .dh-dot { width: 12px; height: 12px; box-shadow: 0 0 0 2px rgba(0,0,0,.5), 0 0 8px currentColor; }
+.dh-app .dh-pname em { color: var(--at-muted); opacity: 1; }
+.dh-app .dh-hint, .dh-app .dh-empty { color: var(--at-muted); opacity: 1; }
+.dh-app .dh-opts label { padding: 3px 0; color: var(--at-ink); }
+.dh-app .dh-go {
+  height: 40px; font-weight: 600; letter-spacing: .04em;
+  background: linear-gradient(180deg, #ffbf4d, #e8920f) !important; color: #1a1205 !important; border-color: #ffbf4d !important;
+  box-shadow: 0 6px 18px rgba(245, 166, 35, .35) !important;
+}
+.dh-app .dh-go:hover:not(:disabled) { filter: brightness(1.08); color: #1a1205 !important; }
+.dh-app .dh-ok { color: var(--at-green); } .dh-app .dh-new { color: var(--at-amber); }

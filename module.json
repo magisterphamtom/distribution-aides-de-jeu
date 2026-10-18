@@ -2,7 +2,7 @@
   "id": "distribution-aides-de-jeu",
   "title": "Distribution d'aides de jeu",
   "description": "Le Gardien remet une aide de jeu (image, page ou journal) à un ou plusieurs joueurs : elle apparaît chez eux avec une animation (enveloppe et cachet de cire années 30, ou notification de tablette moderne) et se range toute seule dans leur journal de bord. Zoom à la molette, déplacement, pings partagés et vue forcée par le Gardien sur toutes les images (reprend le module Zoom & Pan). Pour Foundry v13 / v14.",
-  "version": "1.2.0",
+  "version": "1.3.0",
   "authors": [
     {
       "name": "magisterphamtom",
@@ -31,7 +31,7 @@
   ],
   "url": "https://github.com/magisterphamtom/distribution-aides-de-jeu",
   "manifest": "https://github.com/magisterphamtom/distribution-aides-de-jeu/releases/latest/download/module.json",
-  "download": "https://github.com/magisterphamtom/distribution-aides-de-jeu/releases/download/v1.2.0/module.zip",
+  "download": "https://github.com/magisterphamtom/distribution-aides-de-jeu/releases/download/v1.3.0/module.zip",
   "bugs": "https://github.com/magisterphamtom/distribution-aides-de-jeu/issues",
   "readme": "https://github.com/magisterphamtom/distribution-aides-de-jeu/blob/main/README.md",
   "license": "https://github.com/magisterphamtom/distribution-aides-de-jeu/blob/main/LICENSE",
