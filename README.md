@@ -20,6 +20,7 @@ Sur toute fenêtre d'image (clic sur une image de journal, aperçu d'image) et d
 - bouton antenne (Gardien) : force votre zoom et votre cadrage chez tous les joueurs (ouvre l'image chez eux si besoin).
 Si l'ancien module « Zoom & Pan sur les images » est encore actif, il garde la main (pas de double barre) : désactivez-le.
 
+- **Depuis une image affichée** : le Gardien voit, dans la barre de zoom de toute fenêtre d'image (loupes, antenne), une enveloppe « Remettre aux joueurs (missive) ». Elle ouvre la fenêtre de remise avec cette image et son titre déjà choisis.
 ## Ouvrir la fenêtre
 
 - Barre de gauche, outils des jetons : icône enveloppe.
