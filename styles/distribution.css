@@ -415,3 +415,10 @@
 .dh-form .dh-bmodern { display: none; }
 .dh-form[data-era="modern"] .dh-bmodern { display: inline; }
 .dh-form[data-era="modern"] .dh-b1933 { display: none; }
+
+/* Le joueur choisit de ranger ou non */
+.dh-opts label.dh-sub { padding-left: 22px; font-size: 0.95em; opacity: 0.9; }
+.dh-opts label.dh-sub input:disabled + * , .dh-opts label.dh-sub:has(input:disabled) { opacity: 0.5; cursor: default; }
+#dh-reveal .dh-doc-foot.dh-choice { flex-wrap: wrap; }
+#dh-reveal .dh-doc-foot button:disabled { opacity: 0.55; cursor: progress; }
+#dh-reveal .dh-doc-foot.dh-wait button[data-dh="file"]::after { content: "…"; }
