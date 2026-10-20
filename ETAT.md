@@ -1,2 +1,2 @@
 
-- 1.6.0 (2026-10-20) : bouton « Remettre aux joueurs (missive) » dans la barre de zoom des fenêtres d'image (Gardien seulement) ; `DistributeApp.openImage(src, title)`, exposé par `api.openImage`. Option `distribute` de `attachZoom`.
+- 1.6.1 (2026-10-20) : l'enveloppe s'ajoute aussi dans la barre de Handout Ping Viewer / ancien Zoom & Pan quand ils sont actifs (`foreignZoom()`, `addEnvelope()`), au lieu de ne rien afficher.

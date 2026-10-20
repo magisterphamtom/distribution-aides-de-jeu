@@ -21,6 +21,7 @@ Sur toute fenêtre d'image (clic sur une image de journal, aperçu d'image) et d
 Si l'ancien module « Zoom & Pan sur les images » est encore actif, il garde la main (pas de double barre) : désactivez-le.
 
 - **Depuis une image affichée** : le Gardien voit, dans la barre de zoom de toute fenêtre d'image (loupes, antenne), une enveloppe « Remettre aux joueurs (missive) ». Elle ouvre la fenêtre de remise avec cette image et son titre déjà choisis.
+- **Avec Handout Ping Viewer ou l'ancien Zoom & Pan actifs** : leur barre de zoom garde la main (pas de double barre ni de double ping) et le module y ajoute seulement l'enveloppe « Remettre aux joueurs ». Pour tout avoir dans un seul module, désactivez-les.
 ## Ouvrir la fenêtre
 
 - Barre de gauche, outils des jetons : icône enveloppe.
