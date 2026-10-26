@@ -36,3 +36,9 @@ Dossier des journaux de bord, création automatique, style de l'animation (autom
 Le module utilise un canal réseau (socket) : après l'avoir activé, **relancez le monde** (retour au menu puis lancement), un simple F5 ne suffit pas.
 
 Licence MIT. Polices Limelight, Rajdhani (OFL) et Inter (OFL).
+
+## Aperçus
+
+<p align="center"><img src=".github/previews/aide-de-jeu-mail-2026.png" alt="Mail 2026" width="85%"></p>
+
+<p align="center"><img src=".github/previews/atelier-du-gardien.png" alt="Habillage Atelier du Gardien" width="85%"></p>
